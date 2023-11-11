@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 type Note = {
@@ -43,12 +43,26 @@ function App() {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  
-  
+
+  const handleAddNote = (event:React.FormEvent) => {
+    event.preventDefault();
+
+    const newNote:Note = {
+      id: notes.length + 1,
+      title: title,
+      content: content,
+    };
+    
+    setNotes([newNote, ...notes]);
+
+    setTitle('');
+    setContent('');
+  };
+
 
   return (
     <div className="app-container">
-      <form action="" className="note-form">
+      <form action="" className="note-form" onSubmit={handleAddNote}>
         <input 
         value={title}
         onChange={(event) => setTitle(event.target.value)}
