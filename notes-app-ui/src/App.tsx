@@ -44,6 +44,14 @@ function App() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  const handleNoteClick = (note:Note) => {
+    setSelectedNote(note);
+    setTitle(note.title);
+    setContent(note.content);
+  }
+
   const handleAddNote = (event:React.FormEvent) => {
     event.preventDefault();
 
@@ -59,10 +67,40 @@ function App() {
     setContent('');
   };
 
+  const handleUpdateNote = (event:React.FormEvent) => {
+    event.preventDefault();
+
+    if(!selectedNote){
+      return;
+    }
+    const updateNote:Note = {
+      id:selectedNote.id,
+      title: title,
+      content: content,
+    
+    };
+    const updateNotesList = notes.map((note) => (
+      note.id === selectedNote.id ? updateNote : note
+    ));
+    setNotes(updateNotesList);
+    setSelectedNote(null);
+    setTitle('');
+    setContent(''); 
+  };
+
+  const handleCancel = () => {
+    setSelectedNote(null);
+    setTitle('');
+    setContent('');
+  
+  }
+
+
 
   return (
     <div className="app-container">
-      <form action="" className="note-form" onSubmit={handleAddNote}>
+      <form action="" className="note-form" 
+      onSubmit={selectedNote ? handleUpdateNote : handleAddNote}>
         <input 
         value={title}
         onChange={(event) => setTitle(event.target.value)}
@@ -76,11 +114,19 @@ function App() {
         placeholder='Content' 
         required>
         </textarea>
-        <button type='submit'>Add Note</button>
+        {selectedNote ? (
+          <div className='edit-buttons'>
+            <button type='submit'>Save</button>
+            <button onClick={handleCancel}>Cancel</button>
+          </div>
+        ) : (
+          <button type='submit'>Add Note</button> 
+        )}
+        
       </form>
       <div className="notes-grid">
         {notes.map((note) => (
-          <div className="note-item">
+          <div className="note-item" onClick={() => handleNoteClick(note)}>
             <div className="notes-header">
               <button>x</button>
             </div>
