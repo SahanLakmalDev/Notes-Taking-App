@@ -95,6 +95,13 @@ function App() {
   
   }
 
+  const deleteNote = (event:React.MouseEvent, noteId:number) => {
+    event.stopPropagation();
+    const filteredNotes = notes.filter((note) => note.id !== noteId);
+    setNotes(filteredNotes);
+  
+  };
+
 
 
   return (
@@ -128,7 +135,9 @@ function App() {
         {notes.map((note) => (
           <div className="note-item" onClick={() => handleNoteClick(note)}>
             <div className="notes-header">
-              <button>x</button>
+              <button onClick={(event) => deleteNote(event, note.id)}>
+                x
+              </button>
             </div>
             <h2>{note.title}</h2>
             <p>{note.content}</p>
